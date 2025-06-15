@@ -11,5 +11,6 @@ public class Employee : EntityBase
     public TypeEmployee? TypeEmployee { get; set; }
     public string? Domicile { get; set; }
     public int Age { get; set; }
-
+    public int UserId { get; set; }
+    public User? User { get; set; }
 }
