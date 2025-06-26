@@ -61,7 +61,6 @@ public class Repository : IRepository
     {
         return await Incluir(_context.Set<TEntity>(), incluidos).SingleOrDefaultAsync(e => e.Id == id);
     }
-
     public async Task<List<TEntity>> ObtenerTodos<TEntity>() where TEntity : EntityBase
     {
         return await _context.Set<TEntity>().ToListAsync();

@@ -6,4 +6,5 @@ public interface IAuthService
 {
     public Task<EmployeeDto?> LoginEmployee(EmployeeDto employeeDto);
     public Task<EmployeeDto?> LogoutEmployee();
+    public void TokenGenerator();
 }

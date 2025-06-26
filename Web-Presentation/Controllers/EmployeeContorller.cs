@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Web_Application.DTOs;
+using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
 
@@ -6,8 +8,15 @@ namespace Web_Presentation.Controllers;
 [ApiController]
 public class EmployeeContorller : ControllerBase
 {
-    public Task<IActionResult> Register()
+    private readonly IEmployeeService _employeeService;
+    public EmployeeContorller(IEmployeeService employeeService)
     {
-        return null;
+        _employeeService = employeeService;        
+    }
+    public async Task<IActionResult> Register(EmployeeDto employeeDto)
+    {
+        var employeeRegister = await _employeeService.RegisterEmployee(employeeDto);
+        if (employeeRegister == null) return BadRequest("Error al registrar el empleado");
+        return Ok("Se registro el empleado correctamente");
     }
 }

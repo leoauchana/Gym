@@ -16,8 +16,14 @@ public class AuthService : IAuthService
     {
         return null;
     }
-    public async Task<EmployeeDto> LogoutEmployee()
+    public async Task<EmployeeDto?> LogoutEmployee()
     {
         return null;
     }
+    public void TokenGenerator()
+    {
+
+    }
+
+    private bool VerifyPassword(string passwordInput, string hashedPassword) => BCrypt.Net.BCrypt.Verify(passwordInput, hashedPassword);
 }
