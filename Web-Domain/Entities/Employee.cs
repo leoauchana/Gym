@@ -13,4 +13,5 @@ public class Employee : EntityBase
     public int Age { get; set; }
     public int UserId { get; set; }
     public User? User { get; set; }
+
 }
