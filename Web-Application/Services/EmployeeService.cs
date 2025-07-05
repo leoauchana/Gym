@@ -13,18 +13,18 @@ public class EmployeeService : IEmployeeService
         _repository = repository;
     }
 
-    public async Task<EmployeeDto?> RegisterEmployee(EmployeeDto employeeDto)
+    public async Task<EmployeeDto?> RegisterEmployee(string idEmployee, EmployeeDto employeeDto)
     {
         var employees = await _repository.ListarTodos<Employee>();
-        var employeeFound = employees.Where(e => e.Gmail == employeeDto.Gmail).FirstOrDefault();
+        var employeeFound = employees.Where(e => e.Email == employeeDto!.Gmail).FirstOrDefault();
         if (employeeFound == null) return null;
         var employee = new Employee()
         {
             Id = new Guid(),
-            Name = employeeDto.Name,
+            Name = employeeDto!.Name,
             LastName = employeeDto.LastName,
             Age = employeeDto.Age,
-            Gmail = employeeDto.Gmail,
+            Email = employeeDto.Gmail,
             TypeEmployee = employeeDto.TypeEmployee,
             File = employees.Count + 1,
             Domicile = employeeDto.Domicile,
@@ -40,19 +40,19 @@ public class EmployeeService : IEmployeeService
         return employeeDto;
     }
     
-    public async Task<EmployeeDto?> DeleteEmployee(EmployeeDto? employeeDto)
+    public async Task<EmployeeDto?> DeleteEmployee(string idEmployeeA, EmployeeDto employeeDto)
     {
         if (employeeDto == null) return null;
-        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Gmail == employeeDto.Gmail);
+        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.Gmail);
         if (employeeFound == null) return null;
         await _repository.Eliminar(employeeFound);
         return employeeDto;
     }
 
-    public async Task<EmployeeDto?> UpdateEmployee(EmployeeDto employeeDto)
+    public async Task<EmployeeDto?> UpdateEmployee(string idEmployeeA, EmployeeDto employeeDto)
     {
         if (employeeDto == null) return null;
-        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Gmail == employeeDto.Gmail);
+        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.Gmail);
         if (employeeFound == null) return null;
 
         employeeFound.Name = employeeDto.Name;
@@ -63,6 +63,12 @@ public class EmployeeService : IEmployeeService
 
         await _repository.Actualizar(employeeFound);
         return employeeDto;
+    }
+    public async Task<bool> SetValueRule(string idEmployeeA, double valueRule)
+    {
+        if (!Guid.TryParse(idEmployeeA, out var idEmployee)) return false;
+        var employeeFound = await _repository.ObtenerPorId<Employee>(idEmployee);
+        return true;
     }
     private string CodePassword(string? passwordInput) => BCrypt.Net.BCrypt.HashPassword(passwordInput);
 }

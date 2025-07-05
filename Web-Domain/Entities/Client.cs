@@ -9,4 +9,5 @@ public class Client : EntityBase
     public int Dni { get; set; }
     public string? Domicile { get; set; }
     public int Age { get; set; }
+    public Inscription? Inscription { get; set; }
 }

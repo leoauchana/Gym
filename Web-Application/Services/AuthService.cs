@@ -6,6 +6,7 @@ using System.Text;
 using Web_Application.DTOs;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
+using Web_Domain.Logs;
 using Web_Domain.Repository;
 
 namespace Web_Application.Services;
@@ -26,23 +27,20 @@ public class AuthService : IAuthService
             VerifyPassword(userDto.Password!, u.Password!)
             , nameof(Employee));
         if (userFound == null || userFound.Employee == null) return (null, string.Empty);
+
         var employeeLogin = new EmployeeDto
         {
             Name = userFound.Employee.Name,
             LastName = userFound.Employee.LastName,
             Age = userFound.Employee.Age,
-            Gmail = userFound.Employee.Gmail,
+            Gmail = userFound.Employee.Email,
             TypeEmployee = userFound.Employee.TypeEmployee,
             File = userFound.Employee.File,
             Domicile = userFound.Employee.Domicile,
         };
+        await RegisterLogin(userFound);
         return (employeeLogin, TokenGenerator(userFound));
     }
-
-    //public bool Logout(UserDto userDto)
-    //{
-
-    //}
 
     private string TokenGenerator(User user)
     {
@@ -63,6 +61,15 @@ public class AuthService : IAuthService
             );
         return new JwtSecurityTokenHandler().WriteToken(jwtConfig);
     }
-
+    private async Task RegisterLogin(User user)
+    {
+        var newLogin = new LogAccess 
+        {
+            Id = new Guid(),
+            User = user,
+            isSuccess = true,
+        };
+        await _repository.Agregar(newLogin);
+    }
     private bool VerifyPassword(string passwordInput, string hashedPassword) => BCrypt.Net.BCrypt.Verify(passwordInput, hashedPassword);
 }

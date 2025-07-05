@@ -4,8 +4,11 @@ namespace Web_Domain.Entities;
 
 public class Inscription : EntityBase
 {
+    public int InscriptionNumber { get; set; }
     public DateTime? InscriptionDate { get; set; }
     public List<Pay>? Pays { get; set; }
-    public int ClientId { get; set; }
+    public Guid ClientId { get; set; }
     public Client? Client { get; set; }
+    public Guid EmployeeId { get; set; }
+    public Employee? Employee { get; set; }
 }

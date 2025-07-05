@@ -1,11 +1,141 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Web_Domain.Entities;
+using Web_Domain.Logs;
 
 namespace Web_Infraestructure.Data;
 
 public class GymContext : DbContext
 {
-
     public GymContext(DbContextOptions<GymContext> options) : base(options)
     {
+
+    }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Client> Clients { get; set; }
+    public DbSet<Fee> Fees { get; set; }
+    public DbSet<Inscription> Inscriptions { get; set; }
+    public DbSet<Pay> Pays { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<LogAccess> LogAccesses { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        EmployeeConfig(modelBuilder);
+        ClientConfig(modelBuilder);
+        FeeConfig(modelBuilder);
+        InscriptionConfig(modelBuilder);
+        PayConfig(modelBuilder);
+        UserConfig(modelBuilder);
+        LogConfig(modelBuilder);
+    }
+
+    private void EmployeeConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Employee>()
+            .HasKey(e => e.Id);
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.Name)
+            .IsRequired()
+            .HasMaxLength(25);
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.LastName)
+            .IsRequired()
+            .HasMaxLength(25);
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.Email)
+            .IsRequired()
+            .HasMaxLength(45);
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.Age)
+            .IsRequired();
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.Domicile)
+            .IsRequired()
+            .HasMaxLength(50);
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.File)
+            .IsRequired();
+    }
+    private void ClientConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Client>()
+            .ToTable("Clients")
+            .HasKey(c => c.Id);
+        modelBuilder.Entity<Client>()
+            .Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(25);
+        modelBuilder.Entity<Client>()
+            .Property(c => c.LastName)
+            .IsRequired()
+            .HasMaxLength(25);
+        modelBuilder.Entity<Client>()
+            .Property(c => c.Dni)
+            .IsRequired();
+        modelBuilder.Entity<Client>()
+            .Property(c => c.Age)
+            .IsRequired();
+        modelBuilder.Entity<Client>()
+            .Property(c => c.Domicile)
+            .IsRequired()
+            .HasMaxLength(50);
+    }
+    private void FeeConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Fee>()
+            .ToTable("Fees")
+            .HasKey(f => f.Id);
+        modelBuilder.Entity<Fee>()
+            .Property(f => f.Value)
+            .IsRequired();
+        modelBuilder.Entity<Fee>()
+            .Property(f => f.FeeNumber)
+            .IsRequired();
+    }
+    private void InscriptionConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Inscription>()
+            .ToTable("Inscriptions")
+            .HasKey(i => i.Id);
+        modelBuilder.Entity<Inscription>()
+            .Property(i => i.InscriptionNumber)
+            .IsRequired();
+        modelBuilder.Entity<Inscription>()
+            .Property(i => i.InscriptionDate)
+            .IsRequired();
+    }
+    private void PayConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Pay>()
+            .ToTable("Pays")
+            .HasKey(p => p.Id);
+        modelBuilder.Entity<Pay>()
+            .Property(p => p.PayDate)
+            .IsRequired();
+    }
+    private void UserConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .ToTable("Users")
+            .HasKey(U => U.Id);
+        modelBuilder.Entity<User>()
+            .Property(u => u.UserName)
+            .HasMaxLength(20)
+            .IsRequired();
+        modelBuilder.Entity<User>()
+            .Property(u => u.Password)
+            .HasMaxLength(20)
+            .IsRequired();
+    }
+    private void LogConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LogAccess>()
+            .ToTable("LogAccesses")
+            .HasKey(l => l.Id);
+        modelBuilder.Entity<LogAccess>()
+            .Property(l => l.AccessDate)
+            .IsRequired();
+        modelBuilder.Entity<LogAccess>()
+            .Property(l => l.isSuccess)
+            .IsRequired();
     }
 }

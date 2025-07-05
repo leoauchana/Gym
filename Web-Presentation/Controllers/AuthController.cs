@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web_Application.DTOs;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
@@ -14,6 +15,7 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
     }
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Login(UserDto user)
     {

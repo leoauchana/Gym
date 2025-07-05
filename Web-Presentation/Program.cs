@@ -1,5 +1,7 @@
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Web_Application;
+using Web_Infraestructure.Data;
 
 namespace Web_Presentation
 {
@@ -11,8 +13,15 @@ namespace Web_Presentation
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
             builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddInfraestructureDataServices(builder.Configuration);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

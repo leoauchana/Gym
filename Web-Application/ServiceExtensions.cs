@@ -18,11 +18,15 @@ public static class ServiceExtensions
     {
         services.AddScoped<IRepository, Repository>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IClienteService, ClientService>();
+        services.AddScoped<IClientService, ClientService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IPayService, PayService>();
         services.AddScoped<IDashboarService, DashboardService>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<ClientDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<DashboardDtoValidator>();
+        services.AddValidatorsFromAssemblyContaining<PayDtoValidator>();
         services.AddAuthentication(config =>
         {
             config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

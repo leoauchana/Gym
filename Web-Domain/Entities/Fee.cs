@@ -6,4 +6,5 @@ public class Fee : EntityBase
 {
     public int FeeNumber { get; set; }
     public double Value { get; set; }
+    public Pay? Pay { get; set; }
 }
