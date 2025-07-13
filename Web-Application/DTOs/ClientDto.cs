@@ -2,9 +2,6 @@
 
 public class ClientDto
 {
-    public string? Name { get; set; }
-    public string? LastName { get; set; }
-    public int Dni { get; set; }
-    public string? Domicile { get; set; }
-    public int Age { get; set; }
+    public record Request(string? name, string? lastName, int dni, string? domicile, int age);
+    public record Response(string? name, string? lastName, int dni, string? domicile, int age);
 }

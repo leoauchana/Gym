@@ -1,4 +1,6 @@
-﻿namespace Web_Domain.Rules;
+﻿using Web_Domain.Rules;
+
+namespace Web_Infraestructure.Data.Rule;
 
 public class Rule : IValueRule
 {

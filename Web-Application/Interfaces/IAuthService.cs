@@ -5,6 +5,5 @@ namespace Web_Application.Interfaces;
 
 public interface IAuthService
 {
-    public Task<(EmployeeDto?, string)> LoginEmployee(UserDto employeeDto);
-    //public Task<UserDto?> LogoutEmployee();
+    public Task<UserDto.Response?> LoginEmployee(UserDto.Request? userDto);
 }

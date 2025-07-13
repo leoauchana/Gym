@@ -4,6 +4,6 @@ namespace Web_Application.Interfaces;
 
 public interface IClientService
 {
-    public Task<ClientDto?> RegisterClient(string idEmployee, ClientDto clientDto);
-    public Task<ClientDto?> DeleteClient(ClientDto? clientDto);
+    public Task<ClientDto.Response?> RegisterClient(string idEmployee, ClientDto.Request clientDto);
+    public Task<ClientDto.Response?> DeleteClient(Guid clientDto);
 }

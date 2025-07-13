@@ -4,8 +4,8 @@ namespace Web_Application.Interfaces;
 
 public interface IEmployeeService
 {
-    public Task<EmployeeDto?> RegisterEmployee(string idEmployee, EmployeeDto employeeDto);
-    public Task<EmployeeDto?> DeleteEmployee(string idEmployee, EmployeeDto employeeDto);
-    public Task<EmployeeDto?> UpdateEmployee(string idEmployee, EmployeeDto employeeDto);
+    public Task<EmployeeDto.Response?> RegisterEmployee(string idEmployee, EmployeeDto.Request employeeDto);
+    public Task<EmployeeDto.Response?> DeleteEmployee(string idEmployee, Guid idEmployeeDelete);
+    public Task<EmployeeDto.Response?> UpdateEmployee(string idEmployee, EmployeeDto.Request employeeDto);
     public Task<bool> SetValueRule(string idEmployee, double valueRule);
 }

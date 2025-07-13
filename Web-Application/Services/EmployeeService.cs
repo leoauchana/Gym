@@ -12,57 +12,67 @@ public class EmployeeService : IEmployeeService
     {
         _repository = repository;
     }
-
-    public async Task<EmployeeDto?> RegisterEmployee(string idEmployee, EmployeeDto employeeDto)
+    public async Task<EmployeeDto.Response?> RegisterEmployee(string idEmployee, EmployeeDto.Request employeeDto)
     {
         var employees = await _repository.ListarTodos<Employee>();
-        var employeeFound = employees.Where(e => e.Email == employeeDto!.Gmail).FirstOrDefault();
+        var employeeFound = employees.Where(e => e.Email == employeeDto!.gmail).FirstOrDefault();
         if (employeeFound == null) return null;
-        var employee = new Employee()
+        var newEmployee = new Employee()
         {
-            Id = new Guid(),
-            Name = employeeDto!.Name,
-            LastName = employeeDto.LastName,
-            Age = employeeDto.Age,
-            Email = employeeDto.Gmail,
-            TypeEmployee = employeeDto.TypeEmployee,
+            Id = Guid.NewGuid(),
+            Name = employeeDto!.name,
+            LastName = employeeDto.lastName,
+            Age = employeeDto.age,
+            Email = employeeDto.gmail,
+            TypeEmployee = employeeDto.typeEmployee,
             File = employees.Count + 1,
-            Domicile = employeeDto.Domicile,
+            Domicile = employeeDto.domicile,
             User = new User
             {
-                UserName = employeeDto.UserName,
-                Password = CodePassword(employeeDto.Password)
+                Id = Guid.NewGuid(),
+                UserName = employeeDto.userName,
+                Password = CodePassword(employeeDto.password)
             }
 
         };
-        await _repository.Agregar(employee);
+        await _repository.Agregar(newEmployee);
         if (employeeDto == null) return null;
-        return employeeDto;
+        return new EmployeeDto.Response
+        (
+            newEmployee.Name,
+            newEmployee.LastName,
+            newEmployee.Email,
+            newEmployee.File,
+            newEmployee.TypeEmployee.ToString()
+        );
     }
-    
-    public async Task<EmployeeDto?> DeleteEmployee(string idEmployeeA, EmployeeDto employeeDto)
+    public async Task<EmployeeDto.Response?> DeleteEmployee(string idEmployeeA, Guid idEmployeeDelete)
     {
-        if (employeeDto == null) return null;
-        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.Gmail);
+        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Id == idEmployeeDelete);
         if (employeeFound == null) return null;
         await _repository.Eliminar(employeeFound);
-        return employeeDto;
+        return new EmployeeDto.Response(employeeFound.Name, employeeFound.LastName, employeeFound.Email, employeeFound.File, employeeFound.TypeEmployee.ToString());
     }
-
-    public async Task<EmployeeDto?> UpdateEmployee(string idEmployeeA, EmployeeDto employeeDto)
+    public async Task<EmployeeDto.Response?> UpdateEmployee(string idEmployeeA, EmployeeDto.Request employeeDto)
     {
-        if (employeeDto == null) return null;
-        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.Gmail);
+        var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.gmail);
         if (employeeFound == null) return null;
 
-        employeeFound.Name = employeeDto.Name;
-        employeeFound.LastName = employeeDto.LastName;
-        employeeFound.Age = employeeDto.Age;
-        employeeFound.TypeEmployee = employeeDto.TypeEmployee;
-        employeeFound.Domicile = employeeDto.Domicile;
+        employeeFound.Name = employeeDto.name;
+        employeeFound.LastName = employeeDto.lastName;
+        employeeFound.Age = employeeDto.age;
+        employeeFound.TypeEmployee = employeeDto.typeEmployee;
+        employeeFound.Domicile = employeeDto.domicile;
 
         await _repository.Actualizar(employeeFound);
-        return employeeDto;
+        return new EmployeeDto.Response
+        (
+            employeeFound.Name,
+            employeeFound.LastName,
+            employeeFound.Email,
+            employeeFound.File,
+            employeeFound.TypeEmployee.ToString()
+        );
     }
     public async Task<bool> SetValueRule(string idEmployeeA, double valueRule)
     {
@@ -72,7 +82,3 @@ public class EmployeeService : IEmployeeService
     }
     private string CodePassword(string? passwordInput) => BCrypt.Net.BCrypt.HashPassword(passwordInput);
 }
-
-
-
-

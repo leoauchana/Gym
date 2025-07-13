@@ -2,47 +2,64 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Web_Application;
 using Web_Infraestructure.Data;
+namespace Web_Presentation;
 
-namespace Web_Presentation
+public class Program
 {
-    public class Program
+    /*
+     * Correcciones a hacer
+     */
+    //TODO: Revisar las relaciones de las entidades, para poder implementar un log de registro de clientes
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+
+        builder.Services.AddControllers(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
-            builder.Services.AddControllers(options =>
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        });
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin", policy =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
+                policy.RequireRole("Administrador");
             });
-            builder.Services.AddApplicationServices(builder.Configuration);
-            builder.Services.AddInfraestructureDataServices(builder.Configuration);
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            options.AddPolicy("Coach", policy =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                policy.RequireRole("Coach");
+            });
+            options.AddPolicy("AdminAndReceptionist", policy =>
+            {
+                policy.RequireRole("Admin", "Receptionist");
+            });
+        });
+        builder.Services.AddApplicationServices(builder.Configuration);
+        builder.Services.AddInfraestructureDataServices(builder.Configuration);
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        var app = builder.Build();
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
     }
 }

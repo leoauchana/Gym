@@ -9,6 +9,4 @@ public class Inscription : EntityBase
     public List<Pay>? Pays { get; set; }
     public Guid ClientId { get; set; }
     public Client? Client { get; set; }
-    public Guid EmployeeId { get; set; }
-    public Employee? Employee { get; set; }
 }

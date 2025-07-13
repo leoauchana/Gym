@@ -2,6 +2,6 @@
 
 public class UserDto
 {
-    public string? UserName { get; set; }
-    public string? Password { get; set; }
+    public record Request(string? userName, string? password);
+    public record Response(string? userName, string? name, string? lastName, string? gmail, int file,string? typeEmployee, string? token);
 }

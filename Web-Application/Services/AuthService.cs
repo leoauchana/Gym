@@ -20,26 +20,24 @@ public class AuthService : IAuthService
         _repository = repository;
         _configuration = configuration;
     }
-    public async Task<(EmployeeDto?, string)> LoginEmployee(UserDto userDto)
+    public async Task<UserDto.Response?> LoginEmployee(UserDto.Request? userDto)
     {
         var userFound = await _repository.ObtenerElPrimero<User>(
-            u => u.UserName == userDto.UserName && 
-            VerifyPassword(userDto.Password!, u.Password!)
+            u => u.UserName == userDto!.userName && 
+            VerifyPassword(userDto.password!, u.Password!)
             , nameof(Employee));
-        if (userFound == null || userFound.Employee == null) return (null, string.Empty);
-
-        var employeeLogin = new EmployeeDto
-        {
-            Name = userFound.Employee.Name,
-            LastName = userFound.Employee.LastName,
-            Age = userFound.Employee.Age,
-            Gmail = userFound.Employee.Email,
-            TypeEmployee = userFound.Employee.TypeEmployee,
-            File = userFound.Employee.File,
-            Domicile = userFound.Employee.Domicile,
-        };
+        if (userFound == null || userFound.Employee == null) return null;
         await RegisterLogin(userFound);
-        return (employeeLogin, TokenGenerator(userFound));
+        return userFound != null ? new UserDto.Response
+        (
+            userFound.UserName,
+            userFound.Employee.Name,
+            userFound.Employee.LastName,
+            userFound.Employee.Email,
+            userFound.Employee.File,
+            userFound.Employee.TypeEmployee.ToString(),
+            TokenGenerator(userFound)
+        ) : null;
     }
 
     private string TokenGenerator(User user)

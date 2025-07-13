@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using Web_Application.DTOs;
 using Web_Application.Interfaces;
@@ -17,14 +16,19 @@ public class ClientController : ControllerBase
     {
         _clientService = clientService;
     }
-
-    [HttpGet]
-    public async Task<IActionResult> Register(ClientDto? idClient)
+    [Authorize(Policy = "Receptionist")]
+    [HttpPost]
+    public async Task<IActionResult> Register(ClientDto.Request? clientDto)
     {
         var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var clientRegister = await _clientService.RegisterClient(idEmployee, idClient);
+        if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
+        var clientRegister = await _clientService.RegisterClient(idEmployee, clientDto);
         if (clientRegister == null) return BadRequest("Error al registrar el cliente");
-        return Ok("Se registro el cliente correctamente");
+        return Ok(new
+        {
+            Message = "Cliente registrado con éxito",
+            clientRegister
+        });
     }
 
 }

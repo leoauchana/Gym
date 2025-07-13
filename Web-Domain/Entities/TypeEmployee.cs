@@ -2,5 +2,5 @@
 
 public enum TypeEmployee
 {
-    ENTRENADOR = 0, RECEPCIONISTA, ADMINISTRADOR
+    Coach = 0, Receptionist, Admin
 }

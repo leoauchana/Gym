@@ -4,5 +4,5 @@ namespace Web_Application.Interfaces;
 
 public interface IPayService
 {
-    public Task<ClientDto> PayFee(string idEmployee, Guid idClient);
+    public Task<PayDto.Response?> PayFee(string idEmployee, PayDto.Request payDto);
 }
