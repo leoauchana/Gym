@@ -2,6 +2,6 @@
 
 public class ClientDto
 {
-    public record Request(string? name, string? lastName, int dni, string? domicile, int age);
-    public record Response(string? name, string? lastName, int dni, string? domicile, int age);
+    public record ClientRequest(string? name, string? lastName, int dni, string? domicile, int age);
+    public record ClientResponse(string? name, string? lastName, int dni, string? domicile, int age);
 }

@@ -1,4 +1,5 @@
 ﻿using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
 using Web_Domain.Repository;
@@ -15,13 +16,13 @@ public class ClientService : IClientService
         _repository = repository;
         _valueRule = valueRule;
     }
-    public async Task<ClientDto.Response?> RegisterClient(string idEmployeeS, ClientDto.Request? clientDto)
+    public async Task<ClientDto.ClientResponse?> RegisterClient(string idEmployeeS, ClientDto.ClientRequest? clientDto)
     {
         if(!Guid.TryParse(idEmployeeS, out var idEmployee)) return null;
         var clientFound = await _repository.ObtenerElPrimero<Client>(c => c.Dni == clientDto!.dni);
-        if (clientFound == null) return null;
+        if (clientFound == null) throw new EntityNotFoundException("El cliente no se encontro.");
         var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Id == idEmployee);
-        if (employeeFound == null) return null;
+        if (employeeFound == null) throw new EntityNotFoundException("El empleado autenticado no se encontro.");
         var inscriptionsRegistered = await _repository.ObtenerTodos<Inscription>();
         var newInscription = new Inscription()
         {
@@ -53,7 +54,7 @@ public class ClientService : IClientService
         };
         await _repository.Agregar(newInscription);
         await _repository.Agregar(newPay);
-        return new ClientDto.Response
+        return new ClientDto.ClientResponse
         (
             clientDto.name,
             clientDto.lastName,
@@ -62,12 +63,12 @@ public class ClientService : IClientService
             clientDto.age
         );
     }
-    public async Task<ClientDto.Response?> DeleteClient(Guid idClientDelete)
+    public async Task<ClientDto.ClientResponse?> DeleteClient(Guid idClientDelete)
     {
         var clientFound = await _repository.ObtenerElPrimero<Client>(c => c.Id == idClientDelete);
-        if (clientFound == null) return null;
+        if (clientFound == null) throw new EntityNotFoundException("El cliente no se encontro.");
         await _repository.Eliminar(clientFound);
-        return new ClientDto.Response
+        return new ClientDto.ClientResponse
         (
             clientFound.Name,
             clientFound.LastName,
@@ -76,3 +77,4 @@ public class ClientService : IClientService
             clientFound.Age
         );
     }
+}

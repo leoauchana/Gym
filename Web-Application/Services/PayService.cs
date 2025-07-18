@@ -1,4 +1,5 @@
 ﻿using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
 using Web_Domain.Repository;
@@ -15,7 +16,7 @@ public class PayService : IPayService
         _repository = repository;
         _valueRule = valueRule;
     }
-    public async Task<PayDto.Response?> PayFee(string idEmployeeA, PayDto.Request payDto)
+    public async Task<PayDto.PayResponse?> PayFee(string idEmployeeA, PayDto.PayRequest payDto)
     {
         if (!Guid.TryParse(idEmployeeA, out var idEmployee)) return null;
         var employeeFound = await _repository.ObtenerPorId<Employee>(idEmployee);
@@ -25,7 +26,9 @@ public class PayService : IPayService
             || clientFound == null
             || inscriptionClient == null
             || inscriptionClient.Pays == null)
-            return new PayDto.Response(null, null, false);
+            throw new EntityNotFoundException("El empleado autenticado o cliente no se encontró");
+        if(inscriptionClient == null
+            || inscriptionClient.Pays == null) throw new EntityNotFoundException("La inscripción del cliente no se encontró o no tiene pagos registrados.");
         var payFee = new Pay
         {
             Id = Guid.NewGuid(),
@@ -41,6 +44,6 @@ public class PayService : IPayService
         };
 
         await _repository.Agregar(payFee);
-        return new PayDto.Response(payFee.PayDate, payFee.Fee.Value, true);
+        return new PayDto.PayResponse(payFee.PayDate, payFee.Fee.Value, true);
     }
 }

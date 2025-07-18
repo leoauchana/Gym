@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58 d17.14
+VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web-Presentation", "Web-Presentation.csproj", "{9B2FBBD7-DDF9-4159-8D22-A8DEA3489A5F}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web-Infraestructure.Transversal", "..\Web-Infraestructure.Transversal\Web-Infraestructure.Transversal.csproj", "{BCDD23B1-39F9-4C8C-8FAE-513EB17D51FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web-Application", "..\Web-Application\Web-Application.csproj", "{C2617FEB-43B7-4F12-AFF9-AEE7544E9534}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EE099E74-3F5B-4452-BE10-11A27CD0C205}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGymTests", "..\WebGymTests\WebGymTests.csproj", "{ACF5687C-7403-4BCE-9000-5F4941B840F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,10 @@ Global
 		{C2617FEB-43B7-4F12-AFF9-AEE7544E9534}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2617FEB-43B7-4F12-AFF9-AEE7544E9534}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2617FEB-43B7-4F12-AFF9-AEE7544E9534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF5687C-7403-4BCE-9000-5F4941B840F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF5687C-7403-4BCE-9000-5F4941B840F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF5687C-7403-4BCE-9000-5F4941B840F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF5687C-7403-4BCE-9000-5F4941B840F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +71,7 @@ Global
 		{484F799E-E039-4E97-ACE5-A5A3AE1E810F} = {294A5E34-D412-4F81-996E-EFC755AD25E0}
 		{BCDD23B1-39F9-4C8C-8FAE-513EB17D51FF} = {EAE1DDD9-E7EE-416C-B366-2106DDE01E74}
 		{C2617FEB-43B7-4F12-AFF9-AEE7544E9534} = {D878217A-3D97-4D20-AAD6-6AA94717B837}
+		{ACF5687C-7403-4BCE-9000-5F4941B840F0} = {EE099E74-3F5B-4452-BE10-11A27CD0C205}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {270006B7-3106-42AC-829E-9522B89B618F}

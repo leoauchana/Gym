@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -19,7 +20,7 @@ public class PayController : ControllerBase
 
     [Authorize(Policy = "AdminAndReceptionist")]
     [HttpPost]
-    public async Task<IActionResult> PayFee([FromBody] PayDto.Request payDto)
+    public async Task<IActionResult> PayFee([FromBody] PayDto.PayRequest payDto)
     {
         try
         {
@@ -35,13 +36,13 @@ public class PayController : ControllerBase
                     newPay.isSuccess
                 });
         }
-        catch (ArgumentException ae)
+        catch (EntityNotFoundException ex)
         {
-            return BadRequest(ae.Message);
+            return NotFound(ex.Message);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Problem("Se produjo un error al registrar el pago");
+            return BadRequest(ex.Message);
         }
     }
 }

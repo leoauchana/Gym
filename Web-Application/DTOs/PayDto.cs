@@ -2,6 +2,6 @@
 
 public class PayDto
 {
-    public record Request(Guid idClient);
-    public record Response(DateTime? payDate, double? value, bool isSuccess);
+    public record PayRequest(Guid idClient);
+    public record PayResponse(DateTime? payDate, double? value, bool isSuccess);
 }

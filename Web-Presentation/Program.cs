@@ -10,6 +10,7 @@ public class Program
      * Correcciones a hacer
      */
     //TODO: Revisar las relaciones de las entidades, para poder implementar un log de registro de clientes
+    //TODO: Terminar de hacer los logs y verificar los metodos de los controladores de dashboard
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +26,9 @@ public class Program
         });
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("Admin", policy =>
+            options.AddPolicy("Administrator", policy =>
             {
-                policy.RequireRole("Administrador");
+                policy.RequireRole("Admin");
             });
             options.AddPolicy("Coach", policy =>
             {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -14,19 +15,55 @@ public class DashboardController : ControllerBase
         _dashboarService = dashboarService;
     }
 
-    [Authorize(Policy = "Admin")]
-    [HttpGet]
+    [Authorize(Policy = "Administrator")]
+    [HttpGet("accessRegistered")]
     public async Task<IActionResult> AccessRegistered()
     {
-        var access = await _dashboarService.GetAccess();
-        if(access == null) return NotFound(new 
+        try
         {
-            Message = "No hay registros de acceso"
-        });
-        return Ok(new 
+            var access = await _dashboarService.GetAccess();
+            if (access == null) return NotFound(new
+            {
+                Message = "No hay registros de acceso"
+            });
+            return Ok(new
+            {
+                Message = "Clientes registrados",
+                access
+            });
+        }
+        catch(EntityNotFoundException ex)
         {
-            Message = "Clientes registrados",
-            access
-        });
+            return NotFound(ex.Message);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [Authorize(Policy = "Administrator")]
+    [HttpGet("clientsRegistered")]
+    public async Task<IActionResult> ClientsRegistered()
+    {
+        try
+        {
+            var clientsRegisteredWithEmployee = await _dashboarService.GetAccess();
+            return Ok(new
+            {
+                clientsRegisteredWithEmployee
+            });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch(NullException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

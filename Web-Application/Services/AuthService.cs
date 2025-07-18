@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
 using Web_Domain.Logs;
@@ -20,15 +21,14 @@ public class AuthService : IAuthService
         _repository = repository;
         _configuration = configuration;
     }
-    public async Task<UserDto.Response?> LoginEmployee(UserDto.Request? userDto)
+    public async Task<UserDto.UserResponseAuthenticated?> LoginEmployee(UserDto.UserRequest? userDto)
     {
         var userFound = await _repository.ObtenerElPrimero<User>(
-            u => u.UserName == userDto!.userName && 
-            VerifyPassword(userDto.password!, u.Password!)
-            , nameof(Employee));
-        if (userFound == null || userFound.Employee == null) return null;
+            u => u.UserName == userDto!.userName, nameof(Employee));
+        if (userFound == null || !VerifyPassword(userDto!.password!, userFound.Password!)) throw new EntityNotFoundException("El usuario o la contraseña son incorrectos");
+        if(userFound.Employee == null) throw new NullException("El usuario no tiene un empleado asociado");
         await RegisterLogin(userFound);
-        return userFound != null ? new UserDto.Response
+        return userFound != null ? new UserDto.UserResponseAuthenticated
         (
             userFound.UserName,
             userFound.Employee.Name,
@@ -65,6 +65,7 @@ public class AuthService : IAuthService
         {
             Id = new Guid(),
             User = user,
+            AccessDate = DateTime.Now,
             isSuccess = true,
         };
         await _repository.Agregar(newLogin);

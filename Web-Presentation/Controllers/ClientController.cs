@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -18,17 +19,28 @@ public class ClientController : ControllerBase
     }
     [Authorize(Policy = "Receptionist")]
     [HttpPost]
-    public async Task<IActionResult> Register(ClientDto.Request? clientDto)
+    public async Task<IActionResult> Register(ClientDto.ClientRequest? clientDto)
     {
-        var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-        var clientRegister = await _clientService.RegisterClient(idEmployee, clientDto);
-        if (clientRegister == null) return BadRequest("Error al registrar el cliente");
-        return Ok(new
+        try
         {
-            Message = "Cliente registrado con éxito",
-            clientRegister
-        });
-    }
 
+            var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
+            var clientRegister = await _clientService.RegisterClient(idEmployee, clientDto);
+            if (clientRegister == null) return BadRequest("Error al registrar el cliente");
+            return Ok(new
+            {
+                Message = "Cliente registrado con éxito",
+                clientRegister
+            });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = "Error al registrar el cliente", Error = ex.Message });
+        }
+    }
 }

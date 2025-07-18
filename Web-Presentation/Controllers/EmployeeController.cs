@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -16,49 +17,92 @@ public class EmployeeController : ControllerBase
         _employeeService = employeeService;        
     }
     [AllowAnonymous]
-    [HttpPost]
-    public async Task<IActionResult> Register(EmployeeDto employeeDto)
+    [HttpPost("registerEmployee")]
+    public async Task<IActionResult> Register([FromBody] EmployeeDto.EmployeeRequest employeeDto)
     {
-        var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-        var employeeRegister = await _employeeService.RegisterEmployee(idEmployee, employeeDto);
-        if (employeeRegister == null) return BadRequest("Error al registrar el empleado");
-        return Ok(new
+        try
         {
-            Message = "Empleado registrado con éxito",
-            employeeRegister
-        });
+            var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
+            var employeeRegister = await _employeeService.RegisterEmployee(employeeDto);
+            if (employeeRegister == null) return BadRequest("Error al registrar el empleado");
+            return Ok(new
+            {
+                Message = "Empleado registrado con éxito",
+                employeeRegister.name,
+                employeeRegister.lastName,
+                employeeRegister.gmail,
+                employeeRegister.file,
+                employeeRegister.typeEmployee                
+            });
+        }
+        catch(BusinessConflictException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch(EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "Administrator")]
     [HttpDelete]
-    public async Task<IActionResult> Delete(EmployeeDto employeeDto)
+    public async Task<IActionResult> Delete(Guid idEmployeeDelete)
     {
-        var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-        var employeeDelete = await _employeeService.DeleteEmployee(idEmployee, employeeDto);
-        if (employeeDelete == null) return BadRequest("Error al eliminar el empleado");
-        return Ok(new
+        try
         {
-            Message = "Empleado eliminado con éxito",
-            employeeDelete
-        });
+
+            var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
+            var employeeDelete = await _employeeService.DeleteEmployee(idEmployee, idEmployeeDelete);
+            if (employeeDelete == null) return BadRequest("Error al eliminar el empleado");
+            return Ok(new
+            {
+                Message = "Empleado eliminado con éxito",
+                employeeDelete
+            });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "Administrator")]
     [HttpPut]
-    public async Task<IActionResult> Update(EmployeeDto employeeDto)
+    public async Task<IActionResult> Update(EmployeeDto.EmployeeRequest employeeDto)
     {
-        var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-        var employeeUpdate = await _employeeService.UpdateEmployee(idEmployee, employeeDto);
-        if (employeeUpdate == null) return BadRequest("Error al actualizar el empleado");
-        return Ok(new
+        try
         {
-            Message = "Empleado actualizado con éxito",
-            employeeUpdate
-        });
+
+            var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
+            var employeeUpdate = await _employeeService.UpdateEmployee(idEmployee, employeeDto);
+            if (employeeUpdate == null) return BadRequest("Error al actualizar el empleado");
+            return Ok(new
+            {
+                Message = "Empleado actualizado con éxito",
+                employeeUpdate
+            });
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
-    [Authorize(Policy = "Admin")]
-    [HttpPost]
+    [Authorize(Policy = "Administrator")]
+    [HttpPost("updateRule")]
     public async Task<IActionResult> SetValueRule(double valueRule)
     {
         var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

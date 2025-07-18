@@ -1,4 +1,5 @@
 ﻿using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 using Web_Domain.Entities;
 using Web_Domain.Repository;
@@ -12,11 +13,11 @@ public class EmployeeService : IEmployeeService
     {
         _repository = repository;
     }
-    public async Task<EmployeeDto.Response?> RegisterEmployee(string idEmployee, EmployeeDto.Request employeeDto)
+    public async Task<EmployeeDto.EmployeeResponse?> RegisterEmployee(string idEmployee, EmployeeDto.EmployeeRequest employeeDto)
     {
         var employees = await _repository.ListarTodos<Employee>();
         var employeeFound = employees.Where(e => e.Email == employeeDto!.gmail).FirstOrDefault();
-        if (employeeFound == null) return null;
+        if (employeeFound != null) throw new BusinessConflictException("El empleado ya se encuentra registrado");
         var newEmployee = new Employee()
         {
             Id = Guid.NewGuid(),
@@ -36,8 +37,7 @@ public class EmployeeService : IEmployeeService
 
         };
         await _repository.Agregar(newEmployee);
-        if (employeeDto == null) return null;
-        return new EmployeeDto.Response
+        return new EmployeeDto.EmployeeResponse
         (
             newEmployee.Name,
             newEmployee.LastName,
@@ -46,17 +46,17 @@ public class EmployeeService : IEmployeeService
             newEmployee.TypeEmployee.ToString()
         );
     }
-    public async Task<EmployeeDto.Response?> DeleteEmployee(string idEmployeeA, Guid idEmployeeDelete)
+    public async Task<EmployeeDto.EmployeeResponse?> DeleteEmployee(string idEmployeeA, Guid idEmployeeDelete)
     {
         var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Id == idEmployeeDelete);
-        if (employeeFound == null) return null;
+        if (employeeFound == null) throw new EntityNotFoundException("El empleado no se encontro");
         await _repository.Eliminar(employeeFound);
-        return new EmployeeDto.Response(employeeFound.Name, employeeFound.LastName, employeeFound.Email, employeeFound.File, employeeFound.TypeEmployee.ToString());
+        return new EmployeeDto.EmployeeResponse(employeeFound.Name, employeeFound.LastName, employeeFound.Email, employeeFound.File, employeeFound.TypeEmployee.ToString());
     }
-    public async Task<EmployeeDto.Response?> UpdateEmployee(string idEmployeeA, EmployeeDto.Request employeeDto)
+    public async Task<EmployeeDto.EmployeeResponse?> UpdateEmployee(string idEmployeeA, EmployeeDto.EmployeeRequest employeeDto)
     {
         var employeeFound = await _repository.ObtenerElPrimero<Employee>(e => e.Email == employeeDto.gmail);
-        if (employeeFound == null) return null;
+        if (employeeFound == null) throw new EntityNotFoundException("El empleado no se encontro.");
 
         employeeFound.Name = employeeDto.name;
         employeeFound.LastName = employeeDto.lastName;
@@ -65,7 +65,7 @@ public class EmployeeService : IEmployeeService
         employeeFound.Domicile = employeeDto.domicile;
 
         await _repository.Actualizar(employeeFound);
-        return new EmployeeDto.Response
+        return new EmployeeDto.EmployeeResponse
         (
             employeeFound.Name,
             employeeFound.LastName,

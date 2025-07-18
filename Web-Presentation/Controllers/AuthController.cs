@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web_Application.DTOs;
+using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -16,19 +17,33 @@ public class AuthController : ControllerBase
     }
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> Login([FromBody] UserDto.Request user)
+    public async Task<IActionResult> Login([FromBody] UserDto.UserRequest user)
     {
-        var userValid = await _authService.LoginEmployee(user);
-        if(userValid == null) return NotFound("El nombre de usuario o contraseña son incorrectos");
-        return Ok(new
+        try
         {
-            Success = true,
-            Nombre = userValid.name,
-            Apellido = userValid.lastName,
-            Gmail = userValid.gmail,
-            File = userValid.file,
-            TypeEmployee = userValid.typeEmployee,
-            Token = userValid.token,
-        });
+            var userValid = await _authService.LoginEmployee(user);
+            return Ok(new
+            {
+                Success = true,
+                Nombre = userValid!.name,
+                Apellido = userValid.lastName,
+                Gmail = userValid.gmail,
+                File = userValid.file,
+                TypeEmployee = userValid.typeEmployee,
+                Token = userValid.token,
+            });
+        }
+        catch(EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch(NullException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

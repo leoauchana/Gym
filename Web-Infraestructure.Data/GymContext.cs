@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using Web_Domain.Entities;
 using Web_Domain.Logs;
 
@@ -25,7 +26,9 @@ public class GymContext : DbContext
         InscriptionConfig(modelBuilder);
         PayConfig(modelBuilder);
         UserConfig(modelBuilder);
-        LogConfig(modelBuilder);
+        LogAccessConfig(modelBuilder);
+        LogClientsConfig(modelBuilder);
+        LogEmployeesConfig(modelBuilder);
     }
 
     private void EmployeeConfig(ModelBuilder modelBuilder)
@@ -126,7 +129,7 @@ public class GymContext : DbContext
             .HasMaxLength(20)
             .IsRequired();
     }
-    private void LogConfig(ModelBuilder modelBuilder)
+    private void LogAccessConfig(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<LogAccess>()
             .ToTable("LogAccesses")
@@ -138,4 +141,27 @@ public class GymContext : DbContext
             .Property(l => l.isSuccess)
             .IsRequired();
     }
+    private void LogClientsConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LogClientsRegister>()
+            .ToTable("LogClientsRegister")
+            .HasKey(l => l.Id);
+        modelBuilder.Entity<LogClientsRegister>()
+            .Property(l => l.RegisterDate)
+            .IsRequired();
+    }
+    private void LogEmployeesConfig(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LogEmployeeRegister>()
+            .ToTable("LogEmployeesRegister")
+            .HasKey(l => l.Id);
+        modelBuilder.Entity<LogEmployeeRegister>()
+            .Property(l => l.RegisterDate)
+            .IsRequired();
+        modelBuilder.Entity<LogEmployeeRegister>()
+            .Property(l => l.Description)
+            .HasMaxLength(100)
+            .IsRequired();
+    }
+
 }

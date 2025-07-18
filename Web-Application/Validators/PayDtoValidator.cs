@@ -3,7 +3,7 @@ using Web_Application.DTOs;
 
 namespace Web_Application.Validators;
 
-public class PayDtoValidator : AbstractValidator<PayDto>
+public class PayDtoValidator : AbstractValidator<PayDto.PayRequest>
 {
 
 }
