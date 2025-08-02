@@ -19,51 +19,32 @@ public class DashboardController : ControllerBase
     [HttpGet("accessRegistered")]
     public async Task<IActionResult> AccessRegistered()
     {
-        try
-        {
             var access = await _dashboarService.GetAccess();
-            if (access == null) return NotFound(new
-            {
-                Message = "No hay registros de acceso"
-            });
+            if (access == null) return BadRequest("Hubo un error al obtener los accesos.");
             return Ok(new
             {
                 Message = "Clientes registrados",
                 access
             });
-        }
-        catch(EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
     [Authorize(Policy = "Administrator")]
     [HttpGet("clientsRegistered")]
     public async Task<IActionResult> ClientsRegistered()
     {
-        try
-        {
             var clientsRegisteredWithEmployee = await _dashboarService.GetAccess();
+            if (clientsRegisteredWithEmployee == null) return BadRequest("Hubo un error al obtener los clientes registrados");
             return Ok(new
             {
                 clientsRegisteredWithEmployee
             });
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch(NullException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+    }
+    [Authorize(Policy = "Administrator")]
+    [HttpGet("employeesRegistered")]
+    public async Task<IActionResult> EmployeesRegistered()
+    {
+            var employeesRegistered = await _dashboarService.GetEmployeesRegistered();
+            if (employeesRegistered == null) return BadRequest("Hubo un error al obtener a los empleados registrados.");
+            return Ok(employeesRegistered);
     }
 }
+

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web_Application.DTOs;
-using Web_Application.Exceptions;
 using Web_Application.Interfaces;
 
 namespace Web_Presentation.Controllers;
@@ -9,7 +8,7 @@ namespace Web_Presentation.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
-{
+{   
     private readonly IAuthService _authService;
     public AuthController(IAuthService authService)
     {
@@ -19,8 +18,6 @@ public class AuthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] UserDto.UserRequest user)
     {
-        try
-        {
             var userValid = await _authService.LoginEmployee(user);
             return Ok(new
             {
@@ -32,18 +29,5 @@ public class AuthController : ControllerBase
                 TypeEmployee = userValid.typeEmployee,
                 Token = userValid.token,
             });
-        }
-        catch(EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch(NullException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
 }

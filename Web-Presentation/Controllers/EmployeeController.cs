@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Data.SqlClient;
 using System.Security.Claims;
 using Web_Application.DTOs;
 using Web_Application.Exceptions;
@@ -16,46 +18,24 @@ public class EmployeeController : ControllerBase
     {
         _employeeService = employeeService;        
     }
-    [AllowAnonymous]
+    [Authorize(Policy = "Administrator")]
     [HttpPost("registerEmployee")]
     public async Task<IActionResult> Register([FromBody] EmployeeDto.EmployeeRequest employeeDto)
     {
-        try
-        {
             var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-            var employeeRegister = await _employeeService.RegisterEmployee(employeeDto);
+            var employeeRegister = await _employeeService.RegisterEmployee(idEmployee, employeeDto);
             if (employeeRegister == null) return BadRequest("Error al registrar el empleado");
             return Ok(new
             {
                 Message = "Empleado registrado con éxito",
-                employeeRegister.name,
-                employeeRegister.lastName,
-                employeeRegister.gmail,
-                employeeRegister.file,
-                employeeRegister.typeEmployee                
+                employeeRegister                
             });
-        }
-        catch(BusinessConflictException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch(EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
     [Authorize(Policy = "Administrator")]
-    [HttpDelete]
+    [HttpDelete("{idEmployeeDelete}")]
     public async Task<IActionResult> Delete(Guid idEmployeeDelete)
     {
-        try
-        {
-
             var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
             var employeeDelete = await _employeeService.DeleteEmployee(idEmployee, idEmployeeDelete);
@@ -65,23 +45,11 @@ public class EmployeeController : ControllerBase
                 Message = "Empleado eliminado con éxito",
                 employeeDelete
             });
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
     [Authorize(Policy = "Administrator")]
-    [HttpPut]
-    public async Task<IActionResult> Update(EmployeeDto.EmployeeRequest employeeDto)
+    [HttpPut("{idEmployeeUpdate}")]
+    public async Task<IActionResult> Update(Guid idEmployeeUpdate, EmployeeDto.EmployeeRequest employeeDto)
     {
-        try
-        {
-
             var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
             var employeeUpdate = await _employeeService.UpdateEmployee(idEmployee, employeeDto);
@@ -91,15 +59,22 @@ public class EmployeeController : ControllerBase
                 Message = "Empleado actualizado con éxito",
                 employeeUpdate
             });
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+    }
+    [Authorize(Policy ="Administrator")]
+    [HttpGet("getAllEmployees")]
+    public async Task<IActionResult> GetAll()
+    {
+        var employees = await _employeeService.GetAllEmployees();
+        if (employees == null) return BadRequest("Hubo un error al obtener los empleados");
+        return Ok(employees);
+    }
+    [Authorize(Policy = "Administrator")]
+    [HttpGet("getById/{idEmployee}")]
+    public async Task<IActionResult> GetById(Guid idEmployee)
+    {
+            var employee = await _employeeService.GetEmployeeById(idEmployee);
+            if (employee == null) return BadRequest("Hubo un error al buscar el empleado");
+            return Ok(employee);
     }
     [Authorize(Policy = "Administrator")]
     [HttpPost("updateRule")]
