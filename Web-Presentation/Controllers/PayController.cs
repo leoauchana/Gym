@@ -19,30 +19,17 @@ public class PayController : ControllerBase
     }
 
     [Authorize(Policy = "AdminAndReceptionist")]
-    [HttpPost]
-    public async Task<IActionResult> PayFee([FromBody] PayDto.PayRequest payDto)
+    [HttpPost("{idClient}")]
+    public async Task<IActionResult> PayFee(Guid idClient)
     {
-        try
-        {
             var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
-            var newPay = await _payService.PayFee(idEmployee, payDto);
+            var newPay = await _payService.PayFee(idEmployee, idClient);
             if(newPay == null || newPay.isSuccess) return BadRequest("Error al realizar el pago");
                 return Ok(new
                 {
                     Mesaage = "Pago realizado con exito",
-                    newPay.payDate,
-                    newPay.value,
-                    newPay.isSuccess
+                    newPay
                 });
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
 }

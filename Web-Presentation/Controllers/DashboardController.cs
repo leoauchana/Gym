@@ -23,7 +23,7 @@ public class DashboardController : ControllerBase
             if (access == null) return BadRequest("Hubo un error al obtener los accesos.");
             return Ok(new
             {
-                Message = "Clientes registrados",
+                Message = "Accesos registrados",
                 access
             });
     }
@@ -31,10 +31,11 @@ public class DashboardController : ControllerBase
     [HttpGet("clientsRegistered")]
     public async Task<IActionResult> ClientsRegistered()
     {
-            var clientsRegisteredWithEmployee = await _dashboarService.GetAccess();
+            var clientsRegisteredWithEmployee = await _dashboarService.GetClientsRegistered();
             if (clientsRegisteredWithEmployee == null) return BadRequest("Hubo un error al obtener los clientes registrados");
             return Ok(new
             {
+                Message = "Clientes registrados con su empleado",
                 clientsRegisteredWithEmployee
             });
     }

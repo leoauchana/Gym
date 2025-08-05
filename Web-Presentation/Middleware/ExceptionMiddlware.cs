@@ -20,10 +20,7 @@ namespace Web_Presentation.Middleware
         {
             try
             {
-                //solcitud
                 await _next(context);
-                
-                //solcitud bien procesada
             }
             catch(EntityNotFoundException ex)
             {
@@ -42,6 +39,16 @@ namespace Web_Presentation.Middleware
                 context.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
                 var response = _env.IsDevelopment() ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace)
                     : new ApiException(context.Response.StatusCode, "Resource existing");
+                var jsonResponse = JsonSerializer.Serialize(response);
+                await context.Response.WriteAsync(jsonResponse);
+            }
+            catch(NullException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.NoContent;
+                var response = _env.IsDevelopment() ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace)
+                    : new ApiException(context.Response.StatusCode, "Resource empty");
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
             }
