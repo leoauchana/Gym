@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Data.SqlClient;
 using System.Security.Claims;
 using Web_Application.DTOs;
-using Web_Application.Exceptions;
 using Web_Application.Interfaces;
+using static Web_Application.DTOs.RuleDto;
 
 namespace Web_Presentation.Controllers;
 
@@ -78,12 +76,12 @@ public class EmployeeController : ControllerBase
     }
     [Authorize(Policy = "Administrator")]
     [HttpPost("updateRule")]
-    public async Task<IActionResult> SetValueRule(double valueRule)
+    public async Task<IActionResult> SetValueRule([FromBody] RuleRequest valueRule)
     {
         var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if(idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
         var isSuccessValueRule = await _employeeService.SetValueRule(idEmployee, valueRule);
-        if (isSuccessValueRule) return BadRequest();
+        if (!isSuccessValueRule) return BadRequest("Error al registrar la nueva regla de valor");
         return Ok("Valor de regla actualizado correctamente");
     }
 }

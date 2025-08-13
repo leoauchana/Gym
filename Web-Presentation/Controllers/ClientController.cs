@@ -21,9 +21,6 @@ public class ClientController : ControllerBase
     [HttpPost("registerClient")]
     public async Task<IActionResult> Register(ClientDto.ClientRequest? clientDto)
     {
-        try
-        {
-
             var idEmployee = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idEmployee == null) return BadRequest("No se pudo obtener el ID del empleado");
             var clientRegister = await _clientService.RegisterClient(idEmployee, clientDto);
@@ -33,15 +30,6 @@ public class ClientController : ControllerBase
                 Message = "Cliente registrado con éxito",
                 clientRegister
             });
-        }
-        catch (EntityNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { Message = "Error al registrar el cliente", Error = ex.Message });
-        }
     }
     [Authorize(Policy = "Administrator")]
     [HttpGet("getAllActives")]
@@ -81,4 +69,5 @@ public class ClientController : ControllerBase
                 clientDeleted
             });
     }
+    
 }
