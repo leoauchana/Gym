@@ -7,15 +7,7 @@ using Web_Presentation.Middleware;
 namespace Web_Presentation;
 
 public class Program
-{
-    /*
-     * Correcciones a hacer
-     */
-    //TODO: Terminar de hacer los logs y verificar los metodos de los controladores de dashboard
-    //TODO: Terminar de adaptar el middeware a los controladores y también verificar si las excepciones establecidas están bien, es decir si es una buena practica las excepciones
-    //TODO: Verificar si en los casos que estableci es necesario lanzar excepciones o no
-    
-
+{ 
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
