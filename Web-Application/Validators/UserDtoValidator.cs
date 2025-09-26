@@ -14,6 +14,6 @@ public class UserDtoValidator : AbstractValidator<UserDto.UserRequest>
         RuleFor(u => u.password)
             .NotEmpty().WithMessage("La {PropertyName} del empleado no puede estar vacío.")
             .MaximumLength(20).WithMessage("La {PropertyName} debe tener como maximo de 25 caracteres.")
-            .MinimumLength(8).WithMessage("La {PropertyName} debe tener al menos 8 caracteres.");
+            .MinimumLength(4).WithMessage("La {PropertyName} debe tener al menos 4 caracteres.");
     }
 }

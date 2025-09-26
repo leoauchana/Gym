@@ -28,5 +28,8 @@ public class EmployeeDtoValidator : AbstractValidator<EmployeeDto.EmployeeReques
             .MinimumLength(10).WithMessage("La {PropertyName} debe tener como minimo 10 caracteres.");
         RuleFor(e => e.typeEmployee)
             .NotEmpty().WithMessage("El {PropertyName} no debe ser nulo.");
+        RuleFor(e => e.description)
+            .NotEmpty().WithMessage("La {PropertyName} no debe estar vacia")
+            .MaximumLength(150).WithMessage("La {PropertyName} debe tener como máximo 150 caracteres");
     }
 }

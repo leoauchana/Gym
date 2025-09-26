@@ -39,12 +39,11 @@ public class AuthService : IAuthService
             TokenGenerator(userFound)
         ) : null;
     }
-
     private string TokenGenerator(User user)
     {
         var userClaims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Employee!.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Employee!.Name!),
             new Claim(ClaimTypes.Role, user.Employee.TypeEmployee.ToString()!)
         };

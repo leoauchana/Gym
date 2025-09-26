@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 using Web_Domain.Entities;
+using Web_Domain.Entities.Rule;
 using Web_Domain.Logs;
 
 namespace Web_Infraestructure.Data;
@@ -17,7 +17,10 @@ public class GymContext : DbContext
     public DbSet<Inscription> Inscriptions { get; set; }
     public DbSet<Pay> Pays { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Rule> Rules { get; set; }
     public DbSet<LogAccess> LogAccesses { get; set; }
+    public DbSet<LogEmployeeRegister> LogEmployees { get; set; }
+    public DbSet<LogClientsRegister> LogClientsRegisters { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         EmployeeConfig(modelBuilder);
@@ -26,11 +29,11 @@ public class GymContext : DbContext
         InscriptionConfig(modelBuilder);
         PayConfig(modelBuilder);
         UserConfig(modelBuilder);
+        RuleConfig(modelBuilder);
         LogAccessConfig(modelBuilder);
         LogClientsConfig(modelBuilder);
         LogEmployeesConfig(modelBuilder);
     }
-
     private void EmployeeConfig(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>()
@@ -93,6 +96,15 @@ public class GymContext : DbContext
         modelBuilder.Entity<Fee>()
             .Property(f => f.FeeNumber)
             .IsRequired();
+        modelBuilder.Entity<Fee>()
+            .Property(f => f.InitialDate)
+            .IsRequired();
+        modelBuilder.Entity<Fee>()
+            .Property(f => f.EndDate)
+            .IsRequired();
+        modelBuilder.Entity<Fee>()
+            .Property(f => f.IsCancelled)
+            .IsRequired();
     }
     private void InscriptionConfig(ModelBuilder modelBuilder)
     {
@@ -128,6 +140,19 @@ public class GymContext : DbContext
             .Property(u => u.Password)
             .HasMaxLength(20)
             .IsRequired();
+    }
+    private void RuleConfig(ModelBuilder modelBuilder)
+    {
+             modelBuilder.Entity<Rule>()
+            .ToTable("Rules")
+            .HasKey(r => r.Id);
+        modelBuilder.Entity<Rule>()
+            .Property(r => r.Value)
+            .IsRequired();
+        modelBuilder.Entity<Rule>()
+            .Property(r => r.UpdatedDate)
+            .IsRequired()
+            .HasMaxLength(200);
     }
     private void LogAccessConfig(ModelBuilder modelBuilder)
     {

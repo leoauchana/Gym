@@ -3,5 +3,6 @@
 public class ClientDto
 {
     public record ClientRequest(string? name, string? lastName, int dni, string? domicile, int age);
+    public record RegisterResponse(string? name, string? lastName, int dni, string? domicile, int age, DateTime? initialDate, DateTime? endDate);
     public record ClientResponse(string? name, string? lastName, int dni, string? domicile, int age);
 }

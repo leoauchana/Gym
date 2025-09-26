@@ -17,7 +17,7 @@ public class ClientDtoValidator : AbstractValidator<ClientDto.ClientRequest>
             .MinimumLength(3).WithMessage("La {PropertyName} debe tener al menos 8 caracteres.");
         RuleFor(c => c.dni)
             .NotEmpty().WithMessage("El {PropertyName} del cliente no puede estar vacío.")
-            .InclusiveBetween(7, 8).WithMessage("El {PropertyName} debe tener exactamente 7 o 8 caracteres.");
+            .Must(d => d.ToString().Length == 7 || d.ToString().Length == 8).WithMessage("El {PropertyName} debe tener exactamente 7 o 8 caracteres.");
         RuleFor(c => c.age)
             .NotEmpty().WithMessage("La {PropertyName} del cliente no puede estar vacía.")
             .InclusiveBetween(18, 65).WithMessage("La {PropertyName} debe estar entre 18 y 65 años.");

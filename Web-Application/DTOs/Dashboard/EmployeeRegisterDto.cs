@@ -2,5 +2,5 @@
 
 public class EmployeeRegisterDto
 {
-    public record EmployeeRegisterResponse(DateTime? registerDate, EmployeeDto.EmployeeResponse employeeRegister, EmployeeDto.EmployeeResponse registerBy, string description);
+    public record EmployeeRegisterResponse(DateTime? registerDate, EmployeeDto.EmployeeResponse employeeRegistered, EmployeeDto.EmployeeResponse registerBy, string description);
 }

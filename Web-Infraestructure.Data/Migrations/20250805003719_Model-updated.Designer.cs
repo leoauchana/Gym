@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_Infraestructure.Data;
 
@@ -11,9 +12,11 @@ using Web_Infraestructure.Data;
 namespace Web_Infraestructure.Data.Migrations
 {
     [DbContext(typeof(GymContext))]
-    partial class GymContextModelSnapshot : ModelSnapshot
+    [Migration("20250805003719_Model-updated")]
+    partial class Modelupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,17 +109,8 @@ namespace Web_Infraestructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FeeNumber")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("InitialDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCancelled")
-                        .HasColumnType("bit");
 
                     b.Property<double>("Value")
                         .HasColumnType("float");
@@ -158,6 +152,9 @@ namespace Web_Infraestructure.Data.Migrations
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("FeeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -177,24 +174,6 @@ namespace Web_Infraestructure.Data.Migrations
                     b.HasIndex("InscriptionId");
 
                     b.ToTable("Pays", (string)null);
-                });
-
-            modelBuilder.Entity("Web_Domain.Entities.Rule.Rule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasMaxLength(200)
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rules", (string)null);
                 });
 
             modelBuilder.Entity("Web_Domain.Entities.User", b =>

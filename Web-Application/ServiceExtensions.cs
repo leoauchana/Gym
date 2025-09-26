@@ -20,7 +20,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClientService, ClientService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
-        services.AddScoped<IPayService, PayService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IDashboarService, DashboardService>();
         services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
         services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_Infraestructure.Data;
 
@@ -11,9 +12,11 @@ using Web_Infraestructure.Data;
 namespace Web_Infraestructure.Data.Migrations
 {
     [DbContext(typeof(GymContext))]
-    partial class GymContextModelSnapshot : ModelSnapshot
+    [Migration("20250808202953_Cambio en dominio")]
+    partial class Cambioendominio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,24 +180,6 @@ namespace Web_Infraestructure.Data.Migrations
                     b.HasIndex("InscriptionId");
 
                     b.ToTable("Pays", (string)null);
-                });
-
-            modelBuilder.Entity("Web_Domain.Entities.Rule.Rule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasMaxLength(200)
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rules", (string)null);
                 });
 
             modelBuilder.Entity("Web_Domain.Entities.User", b =>

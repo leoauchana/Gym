@@ -7,4 +7,5 @@ public interface IDashboarService
 {
     Task<List<AccessDto.AccessResponse>?> GetAccess();
     Task<List<ClientsRegisterDto.ClientsRegisterResponse>?> GetClientsRegistered();
+    Task<List<EmployeeRegisterDto.EmployeeRegisterResponse>?> GetEmployeesRegistered();
 }
