@@ -57,8 +57,21 @@ public class ClientController : ControllerBase
         }
         );
     }
+    [Authorize(Policy = "AdminAndReceptionist")]
+    [HttpGet("getById/{idClient}")]
+    public async Task<IActionResult> GetById(Guid idClient)
+    {
+        var clientRegistered = await _clientService.GetById(idClient);
+        if (clientRegistered == null) return BadRequest("Hubo un error al obtener al cliente.");
+        return Ok(new
+        {
+            Message = "Clientes encontrado.",
+            clientRegistered
+        }
+        );
+    }
     [Authorize(Policy ="Administrator")]
-    [HttpPost("deleteClient")]
+    [HttpPost("deleteClient/{idClient}")]
     public async Task<IActionResult> Delete(Guid idClient)
     {
             var clientDeleted = await _clientService.DeleteClient(idClient);
